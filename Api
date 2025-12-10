@@ -17,8 +17,9 @@ api_version="2024-12-01-preview
 
 import os from openai import AzureOpenAI client = AzureOpenAI(     api_version="2024-12-01-preview",     azure_endpoint="https://azuse-mj08bpdh-northcentralus.cognitiveservices.azure.com/",     api_key=subscription_key )
  
-https://colab.research.google.com/drive/1zFv1jDDLAlZFeXxP23QyKwAd_kdks--3?usp=sharing
+updated link
 
+https://colab.research.google.com/drive/12WlCjfElSVM5FMCpdVOZSIBlyoTPiJ5Z?usp=sharing
 
 
 
