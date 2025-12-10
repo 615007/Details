@@ -1,10 +1,19 @@
 Api Key
 
 
-
-https://azuse-misjcntw-swedencentral.cognitiveservices.azure.com/"
-
-
-5irkwBzfn9RWxs8gsOMXwN0xP1RU4vXD2RjsE0mKpb6ZuoLupnPOJQQJ99BLACfhMk5XJ3w3AAAAACOGbfwd
+32IZ7QoiKYbg0eQQKdE0hYwXDllCQHHTstQzmXumpZyUjVhMyRlsJQQJ99BLACHrzpqXJ3w3AAAAACOGr3W0
 
 
+
+https://azuse-mj08bpdh-northcentralus.cognitiveservices.azure.com/openai/responses?api-version=2025-04-01-preview
+
+
+gpt-5-mini
+
+
+api_version="2024-12-01-preview
+
+
+
+import os from openai import AzureOpenAI client = AzureOpenAI(     api_version="2024-12-01-preview",     azure_endpoint="https://azuse-mj08bpdh-northcentralus.cognitiveservices.azure.com/",     api_key=subscription_key )
+ 
