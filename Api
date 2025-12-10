@@ -17,3 +17,133 @@ api_version="2024-12-01-preview
 
 import os from openai import AzureOpenAI client = AzureOpenAI(     api_version="2024-12-01-preview",     azure_endpoint="https://azuse-mj08bpdh-northcentralus.cognitiveservices.azure.com/",     api_key=subscription_key )
  
+
+
+
+
+
+from deepeval import evaluate
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import (
+    AnswerRelevancyMetric,
+    FaithfulnessMetric,
+    ContextualPrecisionMetric,
+    ContextualRecallMetric,
+    BiasMetric,
+    ContextualRelevancyMetric,
+    HallucinationMetric,
+    SummarizationMetric,
+    ToxicityMetric
+)
+from tabulate import tabulate
+from IPython.display import display, HTML
+
+from deepeval.metrics import (
+    AnswerRelevancyMetric,
+    FaithfulnessMetric,
+    HallucinationMetric
+)
+from deepeval.test_case import LLMTestCase
+
+selected_metrics = [
+    AnswerRelevancyMetric,
+    HallucinationMetric,
+    FaithfulnessMetric
+]
+
+evaluate_case(sample_case, model=azure_model, metrics_list=selected_metrics)
+
+from IPython.display import display, HTML
+from deepeval.test_case import LLMTestCase
+from tabulate import tabulate
+
+# Function that takes test data, model and metrics list and evaluates the data.
+def evaluate_case(case_data, model=None, metrics_list=None):
+    """Run selected DeepEval metrics on a given test case."""
+    if metrics_list is None or model is None:
+        return
+
+    # Create the test case
+    test_case = LLMTestCase(
+        input=case_data["input"],
+        expected_output=case_data["expected_output"],
+        actual_output=case_data["actual_output"],
+        retrieval_context=case_data["retrieval_context"],
+        context=case_data["actual_context"],
+    )
+
+    # Run metrics
+    all_results = []
+    for metric in metrics_list:
+        try:
+            m = metric(model=model)
+            m.measure(test_case)
+            all_results.append({
+                "Metric": type(m).__name__,
+                "Score": m.score,
+                "Reason": getattr(m, "reason", None)
+            })
+        except:
+          print(f"Error running Metric: {type(m).__name__}")
+
+    # Display results in table
+    print(f"\n📘 Results for: {case_data['input']}\n")
+
+    display(HTML(tabulate(
+        [[r["Metric"], r["Score"], r["Reason"]] for r in all_results],
+        headers=["Metric", "Score", "Reason"],
+        tablefmt="html"
+    )))
+
+metrics_list = [AnswerRelevancyMetric, FaithfulnessMetric, ContextualPrecisionMetric,  ContextualRecallMetric, BiasMetric, ContextualRelevancyMetric, HallucinationMetric, SummarizationMetric, ToxicityMetric]
+
+evaluate_case(sample_case, model=azure_model, metrics_list=metrics_list)
+evaluate_case(mismatched_case, model=azure_model, metrics_list=metrics_list)
+
+evaluate_case(mismatched_case, model=azure_model, metrics_list=selected_metrics)
+
+
+
+from deepeval.metrics import AnswerRelevancyMetric
+test_case = LLMTestCase(
+        input=sample_case["input"],
+        expected_output=sample_case["expected_output"],
+        actual_output=sample_case["actual_output"],
+        retrieval_context=sample_case["retrieval_context"],
+        context=sample_case["actual_context"],
+    )
+
+metric = AnswerRelevancyMetric(model=azure_model, verbose_mode=True)
+metric.measure(test_case)
+
+
+Answer Relevancy Verbose Logs
+**************************************************
+Statements:
+[
+    "Employees are provided up to 7 days of sick leave annually.",
+    "A medical certificate is required if the absence exceeds three consecutive days.",
+    "Unused sick leave lapses at the end of the year and cannot be carried forward or encashed."
+] 
+ 
+Verdicts:
+[
+    {
+        "verdict": "yes",
+        "reason": null
+    },
+    {
+        "verdict": "yes",
+        "reason": null
+    },
+    {
+        "verdict": "yes",
+        "reason": null
+    }
+]
+ 
+Score: 1.0
+Reason: The score is 1.00 because the response was fully on‑topic and directly addressed the sick‑leave request 
+with no irrelevant statements; it cannot be higher because 1.00 is the maximum possible score.
+======================================================================
+1.0
